@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { N8nIntegration } from '@/components/N8nIntegration';
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -33,6 +34,22 @@ const Calendar = () => {
           <Plus className="w-5 h-5" />
           <span>Novo Compromisso</span>
         </button>
+      </div>
+
+      {/* n8n Integration Panel */}
+      <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+        <N8nIntegration
+          title="Eventos do Calendário"
+          data={{
+            currentMonth: monthNames[currentDate.getMonth()],
+            currentYear: currentDate.getFullYear(),
+            events: events,
+            totalEvents: Object.values(events).flat().length,
+            upcomingEvents: Object.entries(events)
+              .filter(([day]) => parseInt(day) >= new Date().getDate())
+              .map(([day, dayEvents]) => ({ day: parseInt(day), events: dayEvents }))
+          }}
+        />
       </div>
       
       <div className="bg-white rounded-xl shadow-lg border border-gray-100">

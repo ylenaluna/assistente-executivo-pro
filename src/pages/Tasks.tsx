@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { CheckSquare, Plus, Clock, AlertTriangle, Filter } from 'lucide-react';
+import { N8nIntegration } from '@/components/N8nIntegration';
 
 const Tasks = () => {
   const [filter, setFilter] = useState('all');
@@ -90,6 +90,21 @@ const Tasks = () => {
           <Plus className="w-5 h-5" />
           <span>Nova Tarefa</span>
         </button>
+      </div>
+
+      {/* n8n Integration Panel */}
+      <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+        <N8nIntegration
+          title="Lista de Tarefas"
+          data={{
+            tasks: filteredTasks,
+            filter: filter,
+            totalTasks: tasks.length,
+            pendingTasks: tasks.filter(t => t.status === 'pending').length,
+            completedTasks: tasks.filter(t => t.status === 'completed').length,
+            highPriorityTasks: tasks.filter(t => t.priority === 'high').length,
+          }}
+        />
       </div>
       
       <div className="flex items-center space-x-4">
