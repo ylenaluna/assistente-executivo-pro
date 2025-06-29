@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Calendar, Users, FileText, Plane, Mail } from 'lucide-react';
 
 const quickActions = [
@@ -12,6 +13,7 @@ const quickActions = [
 ];
 
 export const QuickActions = () => {
+  const navigate = useNavigate();
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
       <h2 className="text-xl font-bold text-gray-900 mb-6">Ações Rápidas</h2>
@@ -34,7 +36,10 @@ export const QuickActions = () => {
           <p className="text-sm text-executive-100 mb-3">
             "Precisa de ajuda? Posso organizar sua agenda ou priorizar suas tarefas."
           </p>
-          <button className="bg-white text-executive-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors">
+          <button
+            className="bg-white text-executive-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
+            onClick={() => navigate('/assistant')}
+          >
             Perguntar ao Assistente
           </button>
         </div>

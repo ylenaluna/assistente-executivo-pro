@@ -71,3 +71,7 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Environment Variables
+
+To enable the AI assistant chat you need an OpenAI API key. Copy `.env.example` to `.env` and set `VITE_OPENAI_API_KEY`.

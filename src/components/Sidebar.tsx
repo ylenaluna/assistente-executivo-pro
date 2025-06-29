@@ -1,12 +1,13 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Calendar, Clock, CheckSquare, Users, FileText, Plane, Settings, BarChart3 } from 'lucide-react';
+import { Calendar, Clock, CheckSquare, Users, FileText, Plane, Settings, BarChart3, Bot } from 'lucide-react';
 
 const navigationItems = [
   { to: '/', icon: BarChart3, label: 'Dashboard', end: true },
   { to: '/calendar', icon: Calendar, label: 'Agenda' },
   { to: '/tasks', icon: CheckSquare, label: 'Tarefas' },
+  { to: '/assistant', icon: Bot, label: 'Assistente' },
   { to: '/contacts', icon: Users, label: 'Contatos' },
   { to: '/documents', icon: FileText, label: 'Documentos' },
   { to: '/travel', icon: Plane, label: 'Viagens' },

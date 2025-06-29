@@ -8,6 +8,7 @@ import { Layout } from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Calendar from "./pages/Calendar";
 import Tasks from "./pages/Tasks";
+import Assistant from "./pages/Assistant";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
             <Route path="/" element={<Dashboard />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/tasks" element={<Tasks />} />
+            <Route path="/assistant" element={<Assistant />} />
             <Route path="/contacts" element={<div className="text-center py-12"><h1 className="text-2xl font-bold text-gray-900">Contatos - Em Desenvolvimento</h1></div>} />
             <Route path="/documents" element={<div className="text-center py-12"><h1 className="text-2xl font-bold text-gray-900">Documentos - Em Desenvolvimento</h1></div>} />
             <Route path="/travel" element={<div className="text-center py-12"><h1 className="text-2xl font-bold text-gray-900">Viagens - Em Desenvolvimento</h1></div>} />
