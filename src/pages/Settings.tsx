@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -216,10 +215,9 @@ const Settings = () => {
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="general">Geral</TabsTrigger>
           <TabsTrigger value="integrations">Integrações</TabsTrigger>
-          <TabsTrigger value="security">Segurança</TabsTrigger>
           <TabsTrigger value="advanced">Avançado</TabsTrigger>
         </TabsList>
 
@@ -258,6 +256,45 @@ const Settings = () => {
                   <option>UTC-4 (Manaus)</option>
                   <option>UTC-5 (Acre)</option>
                 </select>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Key className="w-5 h-5" />
+                Segurança
+              </CardTitle>
+              <CardDescription>Gerencie suas configurações de segurança e privacidade</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Autenticação de Dois Fatores</Label>
+                  <p className="text-sm text-muted-foreground">Adicione uma camada extra de segurança</p>
+                </div>
+                <Switch />
+              </div>
+              
+              <Separator />
+              
+              <div className="space-y-2">
+                <Label>Alterar Senha</Label>
+                <div className="space-y-2">
+                  <Input type="password" placeholder="Senha atual" />
+                  <Input type="password" placeholder="Nova senha" />
+                  <Input type="password" placeholder="Confirmar nova senha" />
+                  <Button>Alterar Senha</Button>
+                </div>
+              </div>
+              
+              <Separator />
+              
+              <div className="space-y-2">
+                <Label>Sessões Ativas</Label>
+                <p className="text-sm text-muted-foreground">Gerencie onde você está conectado</p>
+                <Button variant="outline">Ver Sessões Ativas</Button>
               </div>
             </CardContent>
           </Card>
@@ -313,47 +350,6 @@ const Settings = () => {
               services={integrations.analytics}
             />
           </div>
-        </TabsContent>
-
-        <TabsContent value="security" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Key className="w-5 h-5" />
-                Segurança
-              </CardTitle>
-              <CardDescription>Gerencie suas configurações de segurança e privacidade</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Autenticação de Dois Fatores</Label>
-                  <p className="text-sm text-muted-foreground">Adicione uma camada extra de segurança</p>
-                </div>
-                <Switch />
-              </div>
-              
-              <Separator />
-              
-              <div className="space-y-2">
-                <Label>Alterar Senha</Label>
-                <div className="space-y-2">
-                  <Input type="password" placeholder="Senha atual" />
-                  <Input type="password" placeholder="Nova senha" />
-                  <Input type="password" placeholder="Confirmar nova senha" />
-                  <Button>Alterar Senha</Button>
-                </div>
-              </div>
-              
-              <Separator />
-              
-              <div className="space-y-2">
-                <Label>Sessões Ativas</Label>
-                <p className="text-sm text-muted-foreground">Gerencie onde você está conectado</p>
-                <Button variant="outline">Ver Sessões Ativas</Button>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
 
         <TabsContent value="advanced" className="space-y-6">
