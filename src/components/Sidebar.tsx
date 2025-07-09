@@ -50,20 +50,6 @@ export const Sidebar = () => {
           ))}
         </ul>
       </nav>
-      
-      <div className="absolute bottom-6 left-4 right-4">
-        <div className="bg-executive-700 rounded-lg p-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gold-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-bold">JD</span>
-            </div>
-            <div>
-              <p className="font-medium">João Silva</p>
-              <p className="text-executive-300 text-xs">CEO</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
