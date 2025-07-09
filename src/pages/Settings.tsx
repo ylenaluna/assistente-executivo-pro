@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +15,7 @@ import {
   FileText, 
   Plane, 
   BarChart3,
-  Settings,
+  Settings as SettingsIcon,
   Key,
   Zap,
   Globe,
@@ -211,7 +210,7 @@ const Settings = () => {
   return (
     <div className="container mx-auto py-6">
       <div className="flex items-center gap-2 mb-6">
-        <Settings className="w-8 h-8" />
+        <SettingsIcon className="w-8 h-8" />
         <h1 className="text-3xl font-bold">Configurações</h1>
       </div>
 
@@ -303,7 +302,7 @@ const Settings = () => {
               
               <div className="space-y-2">
                 <Label>Fuso Horário</Label>
-                <select className="w-full p-2 border rounded-md">
+                <select className="w-full p-2 border rounded-md bg-background">
                   <option>UTC-3 (Brasília)</option>
                   <option>UTC-2 (Fernando de Noronha)</option>
                   <option>UTC-4 (Manaus)</option>
