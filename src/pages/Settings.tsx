@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -214,12 +215,53 @@ const Settings = () => {
         <h1 className="text-3xl font-bold">Configurações</h1>
       </div>
 
-      <Tabs defaultValue="integrations" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="integrations">Integrações de API</TabsTrigger>
+      <Tabs defaultValue="general" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="general">Geral</TabsTrigger>
+          <TabsTrigger value="integrations">Integrações</TabsTrigger>
           <TabsTrigger value="security">Segurança</TabsTrigger>
+          <TabsTrigger value="advanced">Avançado</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="general" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Configurações Gerais</CardTitle>
+              <CardDescription>Personalize a experiência do seu assistente virtual</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Notificações por Email</Label>
+                  <p className="text-sm text-muted-foreground">Receber notificações por email sobre eventos importantes</p>
+                </div>
+                <Switch />
+              </div>
+              
+              <Separator />
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Sincronização Automática</Label>
+                  <p className="text-sm text-muted-foreground">Sincronizar dados automaticamente a cada hora</p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              
+              <Separator />
+              
+              <div className="space-y-2">
+                <Label>Fuso Horário</Label>
+                <select className="w-full p-2 border rounded-md bg-background">
+                  <option>UTC-3 (Brasília)</option>
+                  <option>UTC-2 (Fernando de Noronha)</option>
+                  <option>UTC-4 (Manaus)</option>
+                  <option>UTC-5 (Acre)</option>
+                </select>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="integrations" className="space-y-6">
           <div className="grid gap-6">
@@ -273,46 +315,6 @@ const Settings = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="general" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Configurações Gerais</CardTitle>
-              <CardDescription>Personalize a experiência do seu assistente virtual</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Notificações por Email</Label>
-                  <p className="text-sm text-muted-foreground">Receber notificações por email sobre eventos importantes</p>
-                </div>
-                <Switch />
-              </div>
-              
-              <Separator />
-              
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Sincronização Automática</Label>
-                  <p className="text-sm text-muted-foreground">Sincronizar dados automaticamente a cada hora</p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-              
-              <Separator />
-              
-              <div className="space-y-2">
-                <Label>Fuso Horário</Label>
-                <select className="w-full p-2 border rounded-md bg-background">
-                  <option>UTC-3 (Brasília)</option>
-                  <option>UTC-2 (Fernando de Noronha)</option>
-                  <option>UTC-4 (Manaus)</option>
-                  <option>UTC-5 (Acre)</option>
-                </select>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
         <TabsContent value="security" className="space-y-6">
           <Card>
             <CardHeader>
@@ -349,6 +351,42 @@ const Settings = () => {
                 <Label>Sessões Ativas</Label>
                 <p className="text-sm text-muted-foreground">Gerencie onde você está conectado</p>
                 <Button variant="outline">Ver Sessões Ativas</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="advanced" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Configurações Avançadas</CardTitle>
+              <CardDescription>Configurações para usuários avançados</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Modo Desenvolvedor</Label>
+                  <p className="text-sm text-muted-foreground">Habilitar recursos avançados para desenvolvedores</p>
+                </div>
+                <Switch />
+              </div>
+              
+              <Separator />
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Logs Detalhados</Label>
+                  <p className="text-sm text-muted-foreground">Ativar logs detalhados para debug</p>
+                </div>
+                <Switch />
+              </div>
+              
+              <Separator />
+              
+              <div className="space-y-2">
+                <Label>Exportar Dados</Label>
+                <p className="text-sm text-muted-foreground">Baixar todos os seus dados em formato JSON</p>
+                <Button variant="outline">Exportar Dados</Button>
               </div>
             </CardContent>
           </Card>
