@@ -7,6 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Calendar, 
@@ -15,7 +16,7 @@ import {
   FileText, 
   Plane, 
   BarChart3,
-  Settings as SettingsIcon,
+  SettingsIcon,
   Key,
   Zap,
   Globe,
@@ -268,34 +269,50 @@ const Settings = () => {
               </CardTitle>
               <CardDescription>Gerencie suas configurações de segurança e privacidade</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Autenticação de Dois Fatores</Label>
-                  <p className="text-sm text-muted-foreground">Adicione uma camada extra de segurança</p>
-                </div>
-                <Switch />
-              </div>
-              
-              <Separator />
-              
-              <div className="space-y-2">
-                <Label>Alterar Senha</Label>
-                <div className="space-y-2">
-                  <Input type="password" placeholder="Senha atual" />
-                  <Input type="password" placeholder="Nova senha" />
-                  <Input type="password" placeholder="Confirmar nova senha" />
-                  <Button>Alterar Senha</Button>
-                </div>
-              </div>
-              
-              <Separator />
-              
-              <div className="space-y-2">
-                <Label>Sessões Ativas</Label>
-                <p className="text-sm text-muted-foreground">Gerencie onde você está conectado</p>
-                <Button variant="outline">Ver Sessões Ativas</Button>
-              </div>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="two-factor">
+                  <AccordionTrigger>Autenticação de Dois Fatores</AccordionTrigger>
+                  <AccordionContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label>Habilitar 2FA</Label>
+                        <p className="text-sm text-muted-foreground">Adicione uma camada extra de segurança</p>
+                      </div>
+                      <Switch />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="password">
+                  <AccordionTrigger>Alterar Senha</AccordionTrigger>
+                  <AccordionContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Senha atual</Label>
+                      <Input type="password" placeholder="Digite sua senha atual" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Nova senha</Label>
+                      <Input type="password" placeholder="Digite a nova senha" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Confirmar nova senha</Label>
+                      <Input type="password" placeholder="Confirme a nova senha" />
+                    </div>
+                    <Button>Alterar Senha</Button>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="sessions">
+                  <AccordionTrigger>Sessões Ativas</AccordionTrigger>
+                  <AccordionContent className="space-y-4">
+                    <div className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Gerencie onde você está conectado</p>
+                      <Button variant="outline">Ver Sessões Ativas</Button>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </CardContent>
           </Card>
         </TabsContent>
