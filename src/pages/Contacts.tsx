@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Users, 
@@ -48,17 +49,18 @@ const Contacts = () => {
   ]);
 
   const [newContact, setNewContact] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    phone: '',
-    company: '',
-    position: ''
+    phone: ''
   });
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleAddContact = () => {
-    if (!newContact.name || !newContact.email) {
+    if (!newContact.firstName || !newContact.email) {
       toast({
         title: "Erro",
         description: "Nome e email são obrigatórios.",
@@ -69,17 +71,22 @@ const Contacts = () => {
 
     const contact: Contact = {
       id: Date.now().toString(),
-      ...newContact
+      name: `${newContact.firstName} ${newContact.lastName}`.trim(),
+      email: newContact.email,
+      phone: newContact.phone,
+      company: '',
+      position: ''
     };
 
     setContacts(prev => [...prev, contact]);
     setNewContact({
-      name: '',
+      firstName: '',
+      lastName: '',
       email: '',
-      phone: '',
-      company: '',
-      position: ''
+      phone: ''
     });
+
+    setIsDialogOpen(false);
 
     toast({
       title: "Contato Adicionado",
@@ -104,77 +111,77 @@ const Contacts = () => {
         <h1 className="text-3xl font-bold">Contatos</h1>
       </div>
 
-      {/* Adicionar Novo Contato */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="w-5 h-5" />
-            Adicionar Novo Contato
-          </CardTitle>
-          <CardDescription>Adicione um novo contato à sua lista</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Nome *</Label>
-              <Input
-                id="name"
-                placeholder="Nome completo"
-                value={newContact.name}
-                onChange={(e) => setNewContact(prev => ({ ...prev, name: e.target.value }))}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="email@exemplo.com"
-                value={newContact.email}
-                onChange={(e) => setNewContact(prev => ({ ...prev, email: e.target.value }))}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="phone">Telefone</Label>
-              <Input
-                id="phone"
-                placeholder="+55 11 99999-9999"
-                value={newContact.phone}
-                onChange={(e) => setNewContact(prev => ({ ...prev, phone: e.target.value }))}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="company">Empresa</Label>
-              <Input
-                id="company"
-                placeholder="Nome da empresa"
-                value={newContact.company}
-                onChange={(e) => setNewContact(prev => ({ ...prev, company: e.target.value }))}
-              />
-            </div>
-            
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="position">Cargo</Label>
-              <Input
-                id="position"
-                placeholder="Cargo ou função"
-                value={newContact.position}
-                onChange={(e) => setNewContact(prev => ({ ...prev, position: e.target.value }))}
-              />
-            </div>
-          </div>
-          
-          <div className="flex justify-end mt-4">
-            <Button onClick={handleAddContact}>
+      {/* Botão Adicionar Contato */}
+      <div className="flex justify-start">
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button>
               <Plus className="w-4 h-4 mr-2" />
               Adicionar Contato
             </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Novo Contato</DialogTitle>
+              <DialogDescription>
+                Adicione as informações do novo contato
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">Nome *</Label>
+                <Input
+                  id="firstName"
+                  placeholder="Nome"
+                  value={newContact.firstName}
+                  onChange={(e) => setNewContact(prev => ({ ...prev, firstName: e.target.value }))}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Sobrenome</Label>
+                <Input
+                  id="lastName"
+                  placeholder="Sobrenome"
+                  value={newContact.lastName}
+                  onChange={(e) => setNewContact(prev => ({ ...prev, lastName: e.target.value }))}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="phone">Telefone</Label>
+                <Input
+                  id="phone"
+                  placeholder="+55 11 99999-9999"
+                  value={newContact.phone}
+                  onChange={(e) => setNewContact(prev => ({ ...prev, phone: e.target.value }))}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="email">Email *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="email@exemplo.com"
+                  value={newContact.email}
+                  onChange={(e) => setNewContact(prev => ({ ...prev, email: e.target.value }))}
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-end gap-2 mt-6">
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                Cancelar
+              </Button>
+              <Button onClick={handleAddContact}>
+                Adicionar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
 
       {/* Buscar Contatos */}
       <Card>
