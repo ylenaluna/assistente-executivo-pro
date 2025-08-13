@@ -8,6 +8,7 @@ import { Layout } from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Calendar from "./pages/Calendar";
 import Tasks from "./pages/Tasks";
+import Contacts from "./pages/Contacts";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -24,7 +25,7 @@ const App = () => (
             <Route path="/" element={<Dashboard />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/tasks" element={<Tasks />} />
-            <Route path="/contacts" element={<div className="text-center py-12"><h1 className="text-2xl font-bold text-gray-900">Contatos - Em Desenvolvimento</h1></div>} />
+            <Route path="/contacts" element={<Contacts />} />
             <Route path="/documents" element={<div className="text-center py-12"><h1 className="text-2xl font-bold text-gray-900">Documentos - Em Desenvolvimento</h1></div>} />
             <Route path="/travel" element={<div className="text-center py-12"><h1 className="text-2xl font-bold text-gray-900">Viagens - Em Desenvolvimento</h1></div>} />
             <Route path="/settings" element={<Settings />} />
