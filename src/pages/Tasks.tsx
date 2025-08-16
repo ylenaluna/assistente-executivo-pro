@@ -1,57 +1,14 @@
 import React, { useState } from 'react';
-import { CheckSquare, Plus, Clock, AlertTriangle, Filter } from 'lucide-react';
+import { CheckSquare, Plus, Clock, AlertTriangle, Filter, Edit } from 'lucide-react';
 import { N8nIntegration } from '@/components/N8nIntegration';
+import { useTasks } from '@/hooks/useTasks';
+import { TaskModal } from '@/components/modals/TaskModal';
 
 const Tasks = () => {
   const [filter, setFilter] = useState('all');
-  
-  const tasks = [
-    {
-      id: 1,
-      title: 'Revisar proposta comercial ClienteX',
-      description: 'Analisar valores e condições do contrato',
-      priority: 'high',
-      dueDate: '2025-06-27',
-      status: 'pending',
-      category: 'Comercial'
-    },
-    {
-      id: 2,
-      title: 'Preparar apresentação Q2',
-      description: 'Consolidar resultados do segundo trimestre',
-      priority: 'high',
-      dueDate: '2025-06-28',
-      status: 'in-progress',
-      category: 'Estratégia'
-    },
-    {
-      id: 3,
-      title: 'Reunião com RH sobre contratações',
-      description: 'Definir perfis para novas vagas',
-      priority: 'medium',
-      dueDate: '2025-06-30',
-      status: 'pending',
-      category: 'RH'
-    },
-    {
-      id: 4,
-      title: 'Aprovar orçamento marketing',
-      description: 'Revisar campanhas para Q3',
-      priority: 'medium',
-      dueDate: '2025-07-02',
-      status: 'completed',
-      category: 'Marketing'
-    },
-    {
-      id: 5,
-      title: 'Call com investidores',
-      description: 'Apresentar números do mês',
-      priority: 'high',
-      dueDate: '2025-06-29',
-      status: 'pending',
-      category: 'Financeiro'
-    }
-  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+  const { tasks, loading, createTask, updateTask, deleteTask, toggleTaskStatus } = useTasks();
   
   const filteredTasks = tasks.filter(task => {
     if (filter === 'all') return true;
@@ -60,6 +17,27 @@ const Tasks = () => {
     if (filter === 'high') return task.priority === 'high';
     return true;
   });
+
+  const handleCreateTask = async (taskData) => {
+    await createTask(taskData);
+  };
+
+  const handleUpdateTask = async (taskData) => {
+    if (editingTask) {
+      await updateTask(editingTask.id, taskData);
+      setEditingTask(null);
+    }
+  };
+
+  const openEditModal = (task) => {
+    setEditingTask(task);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingTask(null);
+  };
   
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -86,7 +64,10 @@ const Tasks = () => {
           <CheckSquare className="w-8 h-8 text-executive-600" />
           <h1 className="text-3xl font-bold text-gray-900">Tarefas</h1>
         </div>
-        <button className="bg-executive-600 hover:bg-executive-700 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-colors">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="bg-executive-600 hover:bg-executive-700 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-colors"
+        >
           <Plus className="w-5 h-5" />
           <span>Nova Tarefa</span>
         </button>
@@ -158,12 +139,9 @@ const Tasks = () => {
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
                   <div className="flex items-center space-x-1">
                     <Clock className="w-4 h-4" />
-                    <span>Vencimento: {new Date(task.dueDate).toLocaleDateString('pt-BR')}</span>
+                    <span>Vencimento: {task.due_date ? new Date(task.due_date).toLocaleDateString('pt-BR') : 'Sem data'}</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <span className="bg-gray-100 px-2 py-1 rounded-full text-xs">{task.category}</span>
-                  </div>
-                  {task.priority === 'high' && new Date(task.dueDate) <= new Date() && (
+                  {task.priority === 'high' && task.due_date && new Date(task.due_date) <= new Date() && (
                     <div className="flex items-center space-x-1 text-red-600">
                       <AlertTriangle className="w-4 h-4" />
                       <span>Urgente</span>
@@ -173,10 +151,17 @@ const Tasks = () => {
               </div>
               
               <div className="flex space-x-2 ml-4">
-                <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors">
-                  Editar
+                <button 
+                  onClick={() => openEditModal(task)}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center space-x-1"
+                >
+                  <Edit className="w-4 h-4" />
+                  <span>Editar</span>
                 </button>
-                <button className="px-4 py-2 bg-executive-100 hover:bg-executive-200 text-executive-700 rounded-lg text-sm font-medium transition-colors">
+                <button 
+                  onClick={() => toggleTaskStatus(task.id)}
+                  className="px-4 py-2 bg-executive-100 hover:bg-executive-200 text-executive-700 rounded-lg text-sm font-medium transition-colors"
+                >
                   {task.status === 'completed' ? 'Reabrir' : 'Concluir'}
                 </button>
               </div>
@@ -185,13 +170,27 @@ const Tasks = () => {
         ))}
       </div>
       
-      {filteredTasks.length === 0 && (
+      {filteredTasks.length === 0 && !loading && (
         <div className="text-center py-12">
           <CheckSquare className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma tarefa encontrada</h3>
           <p className="text-gray-500">Tente ajustar os filtros ou adicione uma nova tarefa.</p>
         </div>
       )}
+
+      {loading && (
+        <div className="text-center py-12">
+          <div className="animate-spin w-8 h-8 border-4 border-executive-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-500">Carregando tarefas...</p>
+        </div>
+      )}
+
+      <TaskModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSubmit={editingTask ? handleUpdateTask : handleCreateTask}
+        task={editingTask}
+      />
     </div>
   );
 };

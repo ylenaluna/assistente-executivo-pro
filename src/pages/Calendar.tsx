@@ -2,9 +2,15 @@
 import React, { useState } from 'react';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { N8nIntegration } from '@/components/N8nIntegration';
+import { useCalendarEvents } from '@/hooks/useCalendarEvents';
+import { EventModal } from '@/components/modals/EventModal';
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [editingEvent, setEditingEvent] = useState(null);
+  const { events, loading, createEvent, updateEvent, deleteEvent, getEventsForMonth } = useCalendarEvents();
   
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
@@ -16,11 +22,39 @@ const Calendar = () => {
   
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   
-  const events = {
-    15: [{ time: '09:00', title: 'Reunião Diretoria' }],
-    20: [{ time: '14:00', title: 'Almoço Cliente' }],
-    25: [{ time: '10:00', title: 'Apresentação' }, { time: '16:00', title: 'Call Investidores' }],
-    27: [{ time: '09:00', title: 'Reunião Diretoria' }, { time: '14:00', title: 'Almoço de Negócios' }]
+  const monthEvents = getEventsForMonth(currentDate.getFullYear(), currentDate.getMonth());
+  
+  const getEventsForDay = (day) => {
+    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    const dateStr = date.toISOString().split('T')[0];
+    return monthEvents.filter(event => event.start_time.startsWith(dateStr));
+  };
+
+  const handleCreateEvent = async (eventData) => {
+    await createEvent(eventData);
+  };
+
+  const handleUpdateEvent = async (eventData) => {
+    if (editingEvent) {
+      await updateEvent(editingEvent.id, eventData);
+      setEditingEvent(null);
+    }
+  };
+
+  const openModal = (date = null) => {
+    setSelectedDate(date);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (event) => {
+    setEditingEvent(event);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedDate(null);
+    setEditingEvent(null);
   };
 
   return (
@@ -30,7 +64,10 @@ const Calendar = () => {
           <CalendarIcon className="w-8 h-8 text-executive-600" />
           <h1 className="text-3xl font-bold text-gray-900">Agenda</h1>
         </div>
-        <button className="bg-executive-600 hover:bg-executive-700 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-colors">
+        <button 
+          onClick={() => openModal()}
+          className="bg-executive-600 hover:bg-executive-700 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-colors"
+        >
           <Plus className="w-5 h-5" />
           <span>Novo Compromisso</span>
         </button>
@@ -43,11 +80,9 @@ const Calendar = () => {
           data={{
             currentMonth: monthNames[currentDate.getMonth()],
             currentYear: currentDate.getFullYear(),
-            events: events,
-            totalEvents: Object.values(events).flat().length,
-            upcomingEvents: Object.entries(events)
-              .filter(([day]) => parseInt(day) >= new Date().getDate())
-              .map(([day, dayEvents]) => ({ day: parseInt(day), events: dayEvents }))
+            events: monthEvents,
+            totalEvents: monthEvents.length,
+            upcomingEvents: monthEvents.filter(event => new Date(event.start_time) >= new Date())
           }}
         />
       </div>
@@ -97,7 +132,7 @@ const Calendar = () => {
             
             {Array.from({ length: daysInMonth }, (_, i) => {
               const day = i + 1;
-              const hasEvents = events[day];
+              const dayEvents = getEventsForDay(day);
               const isToday = day === new Date().getDate() && 
                              currentDate.getMonth() === new Date().getMonth() && 
                              currentDate.getFullYear() === new Date().getFullYear();
@@ -105,10 +140,11 @@ const Calendar = () => {
               return (
                 <div
                   key={day}
+                  onClick={() => openModal(new Date(currentDate.getFullYear(), currentDate.getMonth(), day))}
                   className={`h-24 border rounded-lg p-2 cursor-pointer transition-all duration-200 hover:shadow-md ${
                     isToday 
                       ? 'bg-executive-100 border-executive-500' 
-                      : hasEvents 
+                      : dayEvents.length > 0
                         ? 'bg-blue-50 border-blue-200 hover:bg-blue-100' 
                         : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
                   }`}
@@ -116,15 +152,22 @@ const Calendar = () => {
                   <div className={`font-semibold ${isToday ? 'text-executive-700' : 'text-gray-900'}`}>
                     {day}
                   </div>
-                  {hasEvents && (
+                  {dayEvents.length > 0 && (
                     <div className="mt-1 space-y-1">
-                      {hasEvents.slice(0, 2).map((event, idx) => (
-                        <div key={idx} className="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded truncate">
-                          {event.time} {event.title}
+                      {dayEvents.slice(0, 2).map((event, idx) => (
+                        <div 
+                          key={idx} 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openEditModal(event);
+                          }}
+                          className="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded truncate hover:bg-blue-300"
+                        >
+                          {new Date(event.start_time).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})} {event.title}
                         </div>
                       ))}
-                      {hasEvents.length > 2 && (
-                        <div className="text-xs text-gray-600">+{hasEvents.length - 2} mais</div>
+                      {dayEvents.length > 2 && (
+                        <div className="text-xs text-gray-600">+{dayEvents.length - 2} mais</div>
                       )}
                     </div>
                   )}
@@ -134,6 +177,14 @@ const Calendar = () => {
           </div>
         </div>
       </div>
+
+      <EventModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSubmit={editingEvent ? handleUpdateEvent : handleCreateEvent}
+        event={editingEvent}
+        selectedDate={selectedDate}
+      />
     </div>
   );
 };
