@@ -22,12 +22,16 @@ import {
   Globe,
   Mail,
   Phone,
-  Cloud
+  Cloud,
+  MessageCircle
 } from 'lucide-react';
 
 const Settings = () => {
   const { toast } = useToast();
   const [integrations, setIntegrations] = useState({
+    communication: {
+      whatsapp: { enabled: false, webhookUrl: '', verifyToken: '' }
+    },
     calendar: {
       google: { enabled: false, apiKey: '' },
       outlook: { enabled: false, apiKey: '' },
@@ -98,6 +102,19 @@ const Settings = () => {
         [service]: {
           ...prev[category as keyof typeof prev][service as keyof any],
           webhookUrl: value
+        }
+      }
+    }));
+  };
+
+  const handleVerifyTokenChange = (category: string, service: string, value: string) => {
+    setIntegrations(prev => ({
+      ...prev,
+      [category]: {
+        ...prev[category as keyof typeof prev],
+        [service]: {
+          ...prev[category as keyof typeof prev][service as keyof any],
+          verifyToken: value
         }
       }
     }));
@@ -184,6 +201,37 @@ const Settings = () => {
                     }}
                   />
                 </div>
+
+                {/* Verify Token field for WhatsApp */}
+                {serviceName === 'whatsapp' && serviceConfig.verifyToken !== undefined && (
+                  <div>
+                    <Label htmlFor={`${category}-${serviceName}-verify`}>
+                      Verify Token
+                    </Label>
+                    <Input
+                      id={`${category}-${serviceName}-verify`}
+                      type="password"
+                      placeholder="Digite o verify token do WhatsApp"
+                      value={serviceConfig.verifyToken || ''}
+                      onChange={(e) => handleVerifyTokenChange(category, serviceName, e.target.value)}
+                    />
+                  </div>
+                )}
+
+                {/* WhatsApp command examples */}
+                {serviceName === 'whatsapp' && (
+                  <div className="bg-muted p-3 rounded-lg text-sm">
+                    <p className="font-medium mb-2">Comandos disponíveis:</p>
+                    <div className="space-y-1 text-muted-foreground">
+                      <p><strong>TAREFA:</strong> título | descrição | prioridade | data</p>
+                      <p><strong>EVENTO:</strong> título | data | hora início | hora fim | local</p>
+                      <p><strong>CONTATO:</strong> nome | email | telefone | empresa</p>
+                    </div>
+                    <p className="text-xs mt-2">
+                      Webhook URL: https://ahdurcskupcmijxondhd.supabase.co/functions/v1/whatsapp-webhook
+                    </p>
+                  </div>
+                )}
                 
                 <div className="flex gap-2">
                   <Button 
@@ -319,6 +367,14 @@ const Settings = () => {
 
         <TabsContent value="integrations" className="space-y-6">
           <div className="grid gap-6">
+            <IntegrationCard
+              title="Comunicação"
+              description="Integre com WhatsApp para adicionar informações via mensagem"
+              icon={MessageCircle}
+              category="communication"
+              services={integrations.communication}
+            />
+
             <IntegrationCard
               title="Agenda"
               description="Integre com serviços de calendário para sincronizar eventos"
